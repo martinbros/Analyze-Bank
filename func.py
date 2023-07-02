@@ -8,6 +8,25 @@ import os
 import sys
 import pretty_errors
 
+
+def sliceDfCreateDir2(accountDF, year, quarter):
+
+	accountDF.loc[:, "Date"] = pd.to_datetime(accountDF.loc[:, "Date"])  # Convert the "Date" column to datetime
+	accountDF = accountDF[(accountDF['Date'].dt.year == year) & (accountDF["Date"].dt.quarter == quarter)]
+
+	savePath = "D:\\Users\\Ryzen\\PythonScripts\\analyzeBank\\%s_Q%s_working" % (year, quarter)
+	grphPath = savePath + "\\graphs"
+
+	try:
+		os.makedirs(grphPath)
+	except OSError:
+		print ("Creation of the directory %s failed" % grphPath)
+	else:
+		print ("Successfully created the directory %s" % grphPath)
+
+	return savePath, grphPath, accountDF
+
+
 def sliceDfCreateDir(accountDF, sliceList=None, createDir=True):
 	if sliceList == None:
 		incomeRentDF = accountDF.loc[np.logical_or(accountDF['name'] == "Salary", accountDF['name'] == "Rent")]
