@@ -9,9 +9,37 @@ import sys
 import pretty_errors
 
 
+def removeRows(accountPath, regexStrings):
+
+	accountDF = pd.read_csv(accountPath, usecols=[0, 1, 4], names=["Date", "Transaction", "Info"])  # Import checking account CSV for processing
+
+	for regexString in regexStrings:
+
+		filterRows = accountDF["Info"].str.contains(regexString)  # Find the entries that match the regex
+		accountDF = accountDF[~filterRows]
+
+	return accountDF
+
+
+def importAccounts(checkingPath, otherAccounts):
+
+	ckAccount = pd.read_csv(checkingPath, usecols=[0, 1, 4], names=["Date", "Transaction", "Info"])  # Import checking account CSV for processing
+
+	for path in otherAccounts:  # Filter out account payments
+		filterRows = ckAccount["Info"].str.contains(otherAccounts[path])  # Find the entries that match the regex
+		ckAccount = ckAccount[~filterRows]
+
+	for path in otherAccounts:  # Combine accounts
+		newAccount = pd.read_csv(path, usecols=[0, 1, 4], names=["Date", "Transaction", "Info"])  # Import checking account CSV for processing
+		ckAccount = pd.concat([ckAccount, newAccount])
+
+	return ckAccount
+
+
 def sliceDfCreateDir2(accountDF, year, quarter):
 
 	accountDF.loc[:, "Date"] = pd.to_datetime(accountDF.loc[:, "Date"])  # Convert the "Date" column to datetime
+	accountDF.sort_values(by=["Date"], inplace=True)  # Order the dataframe
 	accountDF = accountDF[(accountDF['Date'].dt.year == year) & (accountDF["Date"].dt.quarter == quarter)]
 
 	savePath = "D:\\Users\\Ryzen\\PythonScripts\\analyzeBank\\%s_Q%s_working" % (year, quarter)
@@ -156,6 +184,7 @@ def percentOfIncome(accountDF, fileDirec=None):
 	nameDF["Percent"] = nameDF["abs"].apply(lambda x: (x / income), 1)  # create "percent" column from the "abs" column
 	nameDF = nameDF.sort_values(by="abs", ascending=False)
 	print(nameDF.reset_index(drop=True).to_string(), file=logFile)
+	logFile.close()
 
 def genPieChart(figName, accountDF, graphCol, fileName=None):
 	print("Generating \"%s\" pie chart..." % (figName))
@@ -339,10 +368,10 @@ def dfToLine(pdDataFrame, color, labelId, axs):
 
 	axs[0].plot(pdDataFrame.index, pdDataFrame["Transaction"], color=colorOpt[color % len(colorOpt)], label=labelId + "Charges")
 
-	axs[1].plot(pdDataFrame.index, pdDataFrame["Transaction"].cumsum(), color=colorOpt[color % len(colorOpt)], alpha=0.5, label=labelId + "Balance")
+	axs[1].plot(pdDataFrame.index, pdDataFrame["Transaction"].cumsum(), color=colorOpt[color % len(colorOpt)], alpha=0.2, label=labelId + "Balance")
 	axs[1].plot(weeklySumSeries.index, weeklySumSeries.cumsum(), color=colorOpt[color % len(colorOpt)], label=labelId + "Week Ave.")
 
-	axs[2].plot(weeklySumSeries.index, weeklySumSeries, color=colorOpt[color % len(colorOpt)], alpha=0.5, label=labelId + "Weekly Rate")
+	axs[2].plot(weeklySumSeries.index, weeklySumSeries, color=colorOpt[color % len(colorOpt)], alpha=0.2, label=labelId + "Weekly Rate")
 	axs[2].plot(weeklySumSeries.index, weeklySumSeries.rolling(window=8).mean(), color=colorOpt[color % len(colorOpt)], label=labelId + "Weekly Rate 8 Week Ave.")
 
 def stackGraphs(name, lgDF, separation="year"):
@@ -351,14 +380,14 @@ def stackGraphs(name, lgDF, separation="year"):
 	if separation == "year":
 		lgDF["findCol"] = pd.DatetimeIndex(lgDF["Date"]).year
 		lgDF["month"] = pd.DatetimeIndex(lgDF["Date"]).month
-		lgDF["year"] = 2007
+		lgDF["year"] = 2008
 		lgDF["dateTime"] = pd.to_datetime(lgDF[["year", "month", "day"]])
 		lgDF.set_index("dateTime", inplace=True)
 
 	elif separation == "month":
 		lgDF["findCol"] = pd.DatetimeIndex(lgDF["Date"]).year.astype(str) + " - " + pd.DatetimeIndex(lgDF["Date"]).month.astype(str)
 		lgDF["month"] = 1
-		lgDF["year"] = 2007
+		lgDF["year"] = 2008
 		lgDF["dateTime"] = pd.to_datetime(lgDF[["year", "month", "day"]])
 		lgDF.set_index("dateTime", inplace=True)
 

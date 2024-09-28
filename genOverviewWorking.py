@@ -23,7 +23,16 @@ paths2019 = ["2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
 paths2022 = ["2022Q1_2022-01-05_2022-04-06\\transactionsCatagorized.csv",
 			"2022Q2_2022-04-06_2022-06-30\\transactionsCatagorized.csv",
 			"2022Q3_2022-07-01_2022-10-05\\transactionsCatagorized.csv",
-			"2022Q4_2022-10-05_2022-12-30\\transactionsCatagorized.csvs"]
+			"2022Q4_2022-10-05_2022-12-30\\transactionsCatagorized.csv"]
+
+paths2023 = ["2023_Q1\\transactionsCatagorized.csv",
+			"2023_Q2\\transactionsCatagorized.csv",
+			"2023_Q3\\transactionsCatagorized.csv",
+			"2023_Q4\\transactionsCatagorized.csv"]
+
+paths2024 = ["2024_Q1_working\\transactionsCatagorized.csv",
+			"2024_Q2_working\\transactionsCatagorized.csv",
+			"2024_Q3_working\\transactionsCatagorized.csv"]
 
 allYears = ["2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
 			"2019Q2_2019-04-02_2019-06-27\\transactionsCatagorized.csv",
@@ -42,10 +51,15 @@ allYears = ["2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
 			"2022Q3_2022-07-01_2022-10-05\\transactionsCatagorized.csv",
 			"2022Q4_2022-10-05_2022-12-30\\transactionsCatagorized.csv",
 			"2023_Q1\\transactionsCatagorized.csv",
-			"2023_Q2_working\\transactionsCatagorized.csv"]
+			"2023_Q2\\transactionsCatagorized.csv",
+			"2023_Q3\\transactionsCatagorized.csv",
+			"2023_Q4\\transactionsCatagorized.csv",
+			"2024_Q1_working\\transactionsCatagorized.csv",
+			"2024_Q2_working\\transactionsCatagorized.csv",
+			"2024_Q3_working\\transactionsCatagorized.csv",]
 
 accountDF = pd.DataFrame()
-for path in allYears:
+for path in paths2024:
 	accountDF = accountDF.append(pd.read_csv(path), sort=False)
 
 
@@ -56,9 +70,9 @@ for path in allYears:
 
 plt.style.use('bmh')
 #stackGraphs(accountDF)
-stackGraphs("Chekcing Account, No Reallocation", accountDF.loc[(accountDF.catagory != "reallocation")].copy())
-stackGraphs("Chekcing Account, Income", accountDF.loc[(accountDF.catagory == "income")].copy())
-stackGraphs("Chekcing Account, No Income, No Bills, No Reallocation", accountDF.loc[(accountDF.catagory != "income") & (accountDF.catagory != "bills") & (accountDF.catagory != "reallocation")].copy())
+stackGraphs("Checking Account, No Reallocation", accountDF.loc[(accountDF.catagory != "reallocation")].copy())
+stackGraphs("Checking Account, Income", accountDF.loc[(accountDF.catagory == "income")].copy())
+stackGraphs("Checking Account, No Income, No Bills, No Reallocation", accountDF.loc[(accountDF.catagory != "income") & (accountDF.catagory != "bills") & (accountDF.catagory != "reallocation")].copy())
 stackGraphs("Food and Drink", accountDF.loc[(accountDF.catagory == "food") | (accountDF.catagory == "drink")].copy())
 
 #genLineChartV2("Chekcing Account, No Income, No Bills, No Reallocation", accountDF.loc[(accountDF.catagory != "income") & (accountDF.catagory != "bills") & (accountDF.catagory != "reallocation")].copy(), weekSpendRate=True)
