@@ -9,31 +9,17 @@ import sys
 import pretty_errors
 
 
-def removeRows(accountPath, regexStrings):
+def removeRows(accountPath, cardNo, regexStrings):
 
 	accountDF = pd.read_csv(accountPath, usecols=[0, 1, 4], names=["Date", "Transaction", "Info"])  # Import checking account CSV for processing
-
+	accountDF["remove"] = False
+	accountDF["cardNo"] = cardNo
+	
 	for regexString in regexStrings:
-
 		filterRows = accountDF["Info"].str.contains(regexString)  # Find the entries that match the regex
-		accountDF = accountDF[~filterRows]
-
-	return accountDF
-
-
-def importAccounts(checkingPath, otherAccounts):
-
-	ckAccount = pd.read_csv(checkingPath, usecols=[0, 1, 4], names=["Date", "Transaction", "Info"])  # Import checking account CSV for processing
-
-	for path in otherAccounts:  # Filter out account payments
-		filterRows = ckAccount["Info"].str.contains(otherAccounts[path])  # Find the entries that match the regex
-		ckAccount = ckAccount[~filterRows]
-
-	for path in otherAccounts:  # Combine accounts
-		newAccount = pd.read_csv(path, usecols=[0, 1, 4], names=["Date", "Transaction", "Info"])  # Import checking account CSV for processing
-		ckAccount = pd.concat([ckAccount, newAccount])
-
-	return ckAccount
+		accountDF["remove"] = accountDF["remove"] | filterRows
+	
+	return accountDF[~accountDF["remove"]].drop(["remove"], axis=1), accountDF[accountDF["remove"]].drop(["remove"], axis=1)  # kept transactions, transactions that were removed
 
 
 def sliceDfCreateDir2(accountDF, year, quarter):
