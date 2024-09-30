@@ -15,6 +15,10 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 #
 # Import data, and remove rows that match regex
 #
+# accountPath: string ~ path of where csv file is located
+# cardID: string ~ tag applied to data for reference to which account the expense was applied
+# regexStrings: list ~ list of regex expressions for transactions to be removed
+#
 #################################
 def removeRows(accountPath, cardID, regexStrings):
 
@@ -32,6 +36,11 @@ def removeRows(accountPath, cardID, regexStrings):
 #################################
 #
 # Used to slice dataframe by quarters and create folder
+#
+#
+# accountDF: pandas dataframe ~ contains transaction information
+# year: int ~ Year which the dataframe will be sliced
+# quarter: int ~ Quarter which the dataframe will be sliced
 #
 #################################
 def sliceDfCreateDir2(accountDF, year, quarter):
@@ -56,6 +65,9 @@ def sliceDfCreateDir2(accountDF, year, quarter):
 #################################
 #
 # Automatic and user input catagorization of a transaction
+#
+# accountDF: pandas dataframe ~ contains transaction information
+# catagoryPath: string ~ path of where the catagory pairing document is found
 #
 #################################
 def catagorizeTransactions(accountDF, catagoryPath):
@@ -106,6 +118,9 @@ def catagorizeTransactions(accountDF, catagoryPath):
 #
 # Function to loop the generation of pie charts
 #
+# accountDF: pandas dataframe ~ contains transaction information
+# fileDirec: string ~ location of where to save generated figures
+#
 #################################
 def genPieCharts(accountDF, fileDirec=None):
 	print("Now generating multiple pie charts...\n")
@@ -129,6 +144,11 @@ def genPieCharts(accountDF, fileDirec=None):
 #
 # Generate Pie Chart
 # Used in function above
+#
+# figName: string ~ a unique string to call the figure
+# accountDF: pandas dataframe ~ contains transaction information
+# graphCol: string ~ of the DF "accountDF", this string indicates which column to make the chart from
+# fileName: string ~ location of where to save generated figure
 #
 #################################
 def genPieChart(figName, accountDF, graphCol, fileName=None):
@@ -154,6 +174,9 @@ def genPieChart(figName, accountDF, graphCol, fileName=None):
 #
 # Generate text log of expenses
 # Used in "genPieCharts"
+#
+# accountDF: pandas dataframe ~ contains transaction information
+# fileDirec: string ~ location of where to save generated text file
 #
 #################################
 def percentOfIncome(accountDF, fileDirec=None):
@@ -208,6 +231,10 @@ def percentOfIncome(accountDF, fileDirec=None):
 #
 # Function to loop the generation of line graphs
 #
+# accountDF: pandas dataframe ~ contains transaction information
+# groupCol: string ~ of the DF "accountDF", this string indicates which column to make the chart from
+# directory: string ~ location where to save generate figures
+#
 #################################
 def saveLineGraphs(accountDF, groupCol, directory):
 	print("Now generating multiple line graphs...\n")
@@ -222,173 +249,23 @@ def saveLineGraphs(accountDF, groupCol, directory):
 
 #################################
 #
-# Generate line chart for the above function
+# Generate line chart
+# Used above and overview
+#
+# name: string ~ unique identifier of the generated graph
+# accountDF: pandas dataframe ~ contains transaction information
+# fileName: string ~ location where to save the generate figure
+# groupCol: string ~ of the DF "accountDF", this string indicates which column to make the chart from
+# subDF: pandas dataframe ~ additional data to graph on top of accountDF
+# weekSpendRate: bool ~ True to see additional axis of expense rate
 #
 #################################
 def genLineChart(name, accountDF, fileName=None, subDF=None, weekSpendRate=False):
-	accountDF.loc[:, "Date"] = pd.to_datetime(accountDF["Date"])
-	accountDF["WeekNo"] = accountDF["Date"].dt.strftime("%Y - %U")
-
-	daySumDF = accountDF.groupby("Date").agg({'Transaction': 'sum', 'WeekNo': 'last'}).reset_index()
-	daySumDF["CumSum"] = daySumDF["Transaction"].cumsum()
-	daySumDF["WinAve"] = daySumDF["CumSum"].rolling(window=7).mean()  # Rolling window of the running sum and average window
-
-	weekAveDF = daySumDF.groupby("WeekNo").agg({'CumSum': 'mean', 'Date': 'last'}).reset_index()
-
-	print("Generating \"%s\" line graph..." % (name))
-	stdDev = accountDF["Transaction"].std()
-	average = accountDF["Transaction"].mean()
-	accountDF["StandardDeviations"] = np.absolute((accountDF.loc[:, "Transaction"] - average) / stdDev)
-
-	outlierDF = accountDF[accountDF["StandardDeviations"] > 7]
-
-	if weekSpendRate:
-		axNo = 311
-	else:
-		axNo = 211
-
-	plt.style.use('bmh')
-	fig = plt.figure(name, figsize=(21, 9))
-	ax1 = fig.add_subplot(axNo)
-	ax2 = fig.add_subplot(axNo + 1, sharex=ax1)
-
-	ax1.plot(accountDF["Date"], accountDF["Transaction"], color="dodgerblue", label="Full Account", linewidth=0.65, marker=".")
-
-	for index, row in outlierDF.iterrows():
-		ax1.scatter(row["Date"], row["Transaction"], color="k", marker="x")
-		ax1.text(row["Date"], row["Transaction"], row["name"], size=8)
-
-	if isinstance(subDF, pd.DataFrame):
-		subDF.loc[:, "Date"] = pd.to_datetime(subDF["Date"])
-		ax1.plot(subDF["Date"], subDF["Transaction"], color="mediumseagreen", label=name + " Transactions", linewidth=0.65, marker=".")
-		ax2.plot(subDF["Date"], subDF["Transaction"].cumsum(), color="darkviolet", label=name + " Balance", linewidth=0.65, marker=".")
-	else:
-		ax2.plot(weekAveDF["Date"], weekAveDF["CumSum"], color="goldenrod", label="Week Ave.", linewidth=1.5, marker="x")
-		ax2.plot(accountDF["Date"], accountDF["Transaction"].cumsum(), color="darkviolet", label="Balance", linewidth=0.65, marker=".")
-
-	if weekSpendRate:
-		weekAveDF["weekRate"] = weekAveDF["CumSum"].diff()
-		weekAveDF["monthWin"] = weekAveDF["weekRate"].rolling(window=4).mean()
-
-		# Potentially add cubic interpolation
-		ax3 = fig.add_subplot(axNo + 2, sharex=ax1)
-		ax3.plot(weekAveDF["Date"], weekAveDF["monthWin"], color="red", label="Week Spend Rate Windowed", linewidth=1.5)
-		ax3.legend()
-		ax3.set_title("Weekly Spend Rate")
-
-	ax1.legend()
-	ax1.set_title("Transaction vs Time")
-	ax2.legend()
-	ax2.set_title("Balance vs Time")
-
-	fig.suptitle(name, fontsize=16)
-	fig.tight_layout(pad=4)
-
-	if fileName is None:
-		plt.show()
-	else:
-		fig.savefig(fileName, dpi=100)
-
-	plt.close(fig)
-
-
-#################################
-#
-# Generate a stacked bar graph
-#
-#################################
-def genStackedBar(figName, accountDF, groupCol, fileName=None):
-	print("Generating \"%s\" stacked bar graph..." % (figName))
-	groupDF = accountDF.groupby(groupCol).Transaction.apply(list).reset_index()  # Group accountDF by contents of column variable "groupCol", the contents of column "Transaction" stored in list
-	columnsDF = pd.DataFrame(groupDF.Transaction.tolist(), index=groupDF[groupCol]).abs()  # Create dataframe with list data is separated into columns, index set "groupCol" found groups, absolute value data
-	a = columnsDF.assign(tmp=columnsDF.sum(axis=1)).sort_values('tmp', ascending=False).drop('tmp', 1)  # Sort rows of DF by the row's sum
-
-	plt.style.use('bmh')
-	ax = a.plot(kind='bar', stacked=True, figsize=(18, 9), legend=False)  # Generate a stacked bar graph
-
-	annotateDict = {}
-
-	for p in ax.patches:  # Iterate though the multiple bars in graph
-		if 0.0 != round(p.get_height(), 0):  # if hight is not zero
-
-			if p.get_x() in annotateDict.keys():  # if p.get_x() is present in keys of "annotateDict"...
-				annotateDict[p.get_x()].append(round(p.get_height(), 1))  # append bar height to list with matching dictionary key
-			else:
-				annotateDict[p.get_x()] = []  # create list with newly found key
-				annotateDict[p.get_x()].append(round(p.get_height(), 1))  # append bar height to list with matching dictionary key
-
-	for x in annotateDict.keys():  # Iterate though keys
-		cumSum = 0  # Reset cumulative sum
-		if len(annotateDict[x]) > 1:  # if the length of the list is greater than 1 (more than one bar stacked)
-			for height in annotateDict[x]:  # Iterate though the heights
-				cumSum += height  # Add hight to the cumulative sum
-				ax.annotate(str(height), (x, cumSum), verticalalignment="top")  # Annotate the height at coordinates (x, cumSum)
-		else:
-			cumSum = annotateDict[x][0]  # set cumSum to contents of annotateDict[x][0]
-
-		ax.annotate(str(round(cumSum, 2)), (x, cumSum), fontsize=12, weight='bold')  # Annotate the final height of the bar
-
-	plt.suptitle(figName, fontsize=16)  # Set title
-	plt.tight_layout(pad=4)
-	ax.set_yscale("log")  # Set y-axis scale to logarithmic
-	plt.xlabel("")  # remove x-axis label
-	plt.ylabel("Transaction Total (USD)")  # Set y-axis label
-
-	if fileName is None:
-		plt.show()  # Show Graph
-	else:
-		plt.savefig(fileName, dpi=100)  # Safe graph to file
-
-	plt.close()  # Erase graph from memory
-
-
-#################################
-#
-# Generate a simple line graph
-#
-#################################
-def tLineGraph(accountDF, graphName, groupCol, fileName=None):
-
-	plt.style.use('bmh')
-	fig = plt.figure(graphName, figsize=(21, 9))
-	ax1 = fig.add_subplot(211)
-	ax2 = fig.add_subplot(212, sharex=ax1)
-	ax1.set_title("Transaction vs Time")
-	ax2.set_title("Balance vs Time")
-
-	nameList = accountDF[groupCol].unique()  # Create list of all of the names present within the sub-dataframe
-	for name in nameList:  # Iterate name list
-		nameDF = accountDF[accountDF[groupCol].str.match(name)]  # Create sub-dataframe containing only name data
-
-		ax1.plot(pd.to_datetime(nameDF["Date"]), nameDF["Transaction"], label=name, linewidth=0.65, marker=".")
-		ax2.plot(pd.to_datetime(nameDF["Date"]), nameDF.cumsum()["Transaction"], label=name, linewidth=0.65, marker=".")
-
-	ax1.legend()
-	ax2.legend()
-
-	fig.suptitle(graphName, fontsize=16)
-	fig.tight_layout(pad=4)
-
-	if fileName is None:
-		plt.show()
-	else:
-		fig.savefig(fileName, dpi=100)
-
-	plt.close(fig)
-
-
-#################################
-#
-# Generate line chart
-# Overview use
-#
-#################################
-def genLineChartV2(name, accountDF, fileName=None, subDF=None, weekSpendRate=False):
 	accountDF.loc[:, "Date"] = pd.to_datetime(accountDF.loc[:, "Date"])  # Convert the "Date" column to datetime
 
 	accountSeries = pd.Series(list(accountDF["Transaction"]), index=list(pd.to_datetime(accountDF["Date"])))
 	dailySumSeries = accountSeries.resample('1D').sum()
-	weeklySumSeries = accountSeries.resample('1W', label="left").sum()  # Collapse data to the mean value spent within a week
+	weeklySumSeries = accountSeries.resample('1W', label="right").sum()  # Collapse data to the mean value spent within a week
 
 	print("Generating \"%s\" line graph..." % (name))
 	stdDev = accountDF["Transaction"].std()
@@ -450,9 +327,107 @@ def genLineChartV2(name, accountDF, fileName=None, subDF=None, weekSpendRate=Fal
 
 #################################
 #
+# Generate a stacked bar graph
+#
+# figName: string ~ unique identifier of the generated graph
+# accountDF: pandas dataframe ~ contains transaction information
+# groupCol: string ~ of the DF "accountDF", this string indicates which column to make the chart from
+# fileName: string ~ location where to save the generate figure
+#
+#################################
+def genStackedBar(figName, accountDF, groupCol, fileName=None):
+	print("Generating \"%s\" stacked bar graph..." % (figName))
+	groupDF = accountDF.groupby(groupCol).Transaction.apply(list).reset_index()  # Group accountDF by contents of column variable "groupCol", the contents of column "Transaction" stored in list
+	columnsDF = pd.DataFrame(groupDF.Transaction.tolist(), index=groupDF[groupCol]).abs()  # Create dataframe with list data is separated into columns, index set "groupCol" found groups, absolute value data
+	a = columnsDF.assign(tmp=columnsDF.sum(axis=1)).sort_values('tmp', ascending=False).drop('tmp', 1)  # Sort rows of DF by the row's sum
+
+	plt.style.use('bmh')
+	ax = a.plot(kind='bar', stacked=True, figsize=(18, 9), legend=False)  # Generate a stacked bar graph
+
+	annotateDict = {}
+
+	for p in ax.patches:  # Iterate though the multiple bars in graph
+		if 0.0 != round(p.get_height(), 0):  # if hight is not zero
+
+			if p.get_x() in annotateDict.keys():  # if p.get_x() is present in keys of "annotateDict"...
+				annotateDict[p.get_x()].append(round(p.get_height(), 1))  # append bar height to list with matching dictionary key
+			else:
+				annotateDict[p.get_x()] = []  # create list with newly found key
+				annotateDict[p.get_x()].append(round(p.get_height(), 1))  # append bar height to list with matching dictionary key
+
+	for x in annotateDict.keys():  # Iterate though keys
+		cumSum = 0  # Reset cumulative sum
+		if len(annotateDict[x]) > 1:  # if the length of the list is greater than 1 (more than one bar stacked)
+			for height in annotateDict[x]:  # Iterate though the heights
+				cumSum += height  # Add hight to the cumulative sum
+				ax.annotate(str(height), (x, cumSum), verticalalignment="top")  # Annotate the height at coordinates (x, cumSum)
+		else:
+			cumSum = annotateDict[x][0]  # set cumSum to contents of annotateDict[x][0]
+
+		ax.annotate(str(round(cumSum, 2)), (x, cumSum), fontsize=12, weight='bold')  # Annotate the final height of the bar
+
+	plt.suptitle(figName, fontsize=16)  # Set title
+	plt.tight_layout(pad=4)
+	ax.set_yscale("log")  # Set y-axis scale to logarithmic
+	plt.xlabel("")  # remove x-axis label
+	plt.ylabel("Transaction Total (USD)")  # Set y-axis label
+
+	if fileName is None:
+		plt.show()  # Show Graph
+	else:
+		plt.savefig(fileName, dpi=100)  # Safe graph to file
+
+	plt.close()  # Erase graph from memory
+
+
+#################################
+#
+# Generate a simple line graph
+# accountDF: pandas dataframe ~ contains transaction information
+# graphName: string ~ unique identifier of the generated graph
+# groupCol: string ~ of the DF "accountDF", this string indicates which column to make the chart from
+# fileName: string ~ location where to save the generate figure
+#
+#################################
+def tLineGraph(accountDF, graphName, groupCol, fileName=None):
+
+	plt.style.use('bmh')
+	fig = plt.figure(graphName, figsize=(21, 9))
+	ax1 = fig.add_subplot(211)
+	ax2 = fig.add_subplot(212, sharex=ax1)
+	ax1.set_title("Transaction vs Time")
+	ax2.set_title("Balance vs Time")
+
+	nameList = accountDF[groupCol].unique()  # Create list of all of the names present within the sub-dataframe
+	for name in nameList:  # Iterate name list
+		nameDF = accountDF[accountDF[groupCol].str.match(name)]  # Create sub-dataframe containing only name data
+
+		ax1.plot(pd.to_datetime(nameDF["Date"]), nameDF["Transaction"], label=name, linewidth=0.65, marker=".")
+		ax2.plot(pd.to_datetime(nameDF["Date"]), nameDF.cumsum()["Transaction"], label=name, linewidth=0.65, marker=".")
+
+	ax1.legend()
+	ax2.legend()
+
+	fig.suptitle(graphName, fontsize=16)
+	fig.tight_layout(pad=4)
+
+	if fileName is None:
+		plt.show()
+	else:
+		fig.savefig(fileName, dpi=100)
+
+	plt.close(fig)
+
+
+#################################
+#
 # Generate stacked line graphs that are interactable
 # Helpful when comparing months or years
 # Overview use
+#
+# name: string ~ unique identifier of the generated graph
+# lgDF: pandas dataframe ~ contains transaction information
+# separation: string ~ how the user would like to stack the data
 #
 #################################
 def stackGraphs(name, lgDF, separation="year"):
@@ -480,13 +455,20 @@ def stackGraphs(name, lgDF, separation="year"):
 	for idx, sep in enumerate(sepList):
 		dfToLine(lgDF.loc[(lgDF.findCol == sep)], idx, str(sep), axes)
 
+	if len(sepList) > 5:
+		sizeFont = "xx-small"
+		ptTolerance = 2
+	else:
+		sizeFont = None
+		ptTolerance = 8
+
 	legDict = {}
 	lineDict = {}
 	for idx, ax in enumerate(fig.axes):
-		legDict[idx] = ax.legend(bbox_to_anchor=(1, 1), loc="upper left", fancybox=True, shadow=True)
+		legDict[idx] = ax.legend(bbox_to_anchor=(1, 1), loc="upper left", fancybox=True, shadow=True, fontsize=sizeFont)
 
 		for legline, origline in zip(legDict[idx].get_lines(), ax.lines):
-			legline.set_picker(8)  # pt tolerance
+			legline.set_picker(ptTolerance)  # pt tolerance
 			legDict[legline] = origline
 			origline.set_visible(True)
 			legline.set_alpha(1)
@@ -516,19 +498,24 @@ def stackGraphs(name, lgDF, separation="year"):
 # Add line to multiple axes
 # Used in the function above
 #
+# pdDataFrame: pandas dataframe ~ contains transaction information
+# color: int ~ choose the index from which color the graphed line will be
+# labelID: string ~ identifier for the line to be graphed
+# axs: list ~ collection of axis which the line will be applied to
+#
 #################################
 def dfToLine(pdDataFrame, color, labelId, axs):
 	colorOpt = ['#e6194B', '#3cb44b', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabed4', '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#000000']
 
 	accountSeries = pd.Series(list(pdDataFrame["Transaction"]), index=pdDataFrame.index)
-	weeklySumSeries = accountSeries.resample('1W', label="left").sum()  # Collapse data to the mean value spent within a week
+	weeklySumSeries = accountSeries.resample('1W', label="right").sum()  # Collapse data to the mean value spent within a week
 
 	axs[0].plot(pdDataFrame.index, pdDataFrame["Transaction"], color=colorOpt[color % len(colorOpt)], label=labelId + "Charges")
 
-	axs[1].plot(pdDataFrame.index, pdDataFrame["Transaction"].cumsum(), color=colorOpt[color % len(colorOpt)], alpha=0.2, label=labelId + "Balance")
+	axs[1].plot(pdDataFrame.index, pdDataFrame["Transaction"].cumsum(), color=colorOpt[color % len(colorOpt)], alpha=0.4, label=labelId + "Balance")
 	axs[1].plot(weeklySumSeries.index, weeklySumSeries.cumsum(), color=colorOpt[color % len(colorOpt)], label=labelId + "Week Ave.")
 
-	axs[2].plot(weeklySumSeries.index, weeklySumSeries, color=colorOpt[color % len(colorOpt)], alpha=0.2, label=labelId + "Weekly Rate")
+	axs[2].plot(weeklySumSeries.index, weeklySumSeries, color=colorOpt[color % len(colorOpt)], alpha=0.4, label=labelId + "Weekly Rate")
 	axs[2].plot(weeklySumSeries.index, weeklySumSeries.rolling(window=8).mean(), color=colorOpt[color % len(colorOpt)], label=labelId + "Weekly Rate 8 Week Ave.")
 
 
