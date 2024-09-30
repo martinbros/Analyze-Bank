@@ -59,7 +59,7 @@ allYears = ["2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
 			"2024_Q3_working\\transactionsCatagorized.csv",]
 
 accountDF = pd.DataFrame()
-for path in paths2023:
+for path in allYears:
 	accountDF = accountDF.append(pd.read_csv(path), sort=False)
 
 
@@ -83,8 +83,7 @@ dataDF = accountDF.groupby(["catagory"]).Transaction.sum().reset_index().sort_va
 topNameList = list(dataDF["catagory"])[:10]  #List of top items
 for i, name in enumerate(topNameList, start=1):
 	dataSample = accountDF[accountDF["catagory"].str.match(name)]
-	print("\n-----Start-------\n")
-	genLineChartV2("#%s: %s" % (i, name), dataSample, weekSpendRate=True)  # Just transaction info
+	genLineChartV2("#%s: %s" % (i, name), dataSample.copy(), weekSpendRate=True)  # Just transaction info
 
 #Generate figures for the locations with the top spending
 dataDF = accountDF.groupby(["catagory", "name"]).Transaction.sum().reset_index().sort_values("Transaction") # Group accountDF by the catagory then by the name, sum the "transaction" column
@@ -95,5 +94,4 @@ print(dataDF)
 
 for i, name in enumerate(topNameList, start=1):
 	dataSample = accountDF[accountDF["name"].str.match(name)]
-	print("\n-----Start-------\n")
-	genLineChartV2("#%s: %s" % (i, name), dataSample, weekSpendRate=True)  # Just transaction info
+	genLineChartV2("#%s: %s" % (i, name), dataSample.copy(), weekSpendRate=True)  # Just transaction info

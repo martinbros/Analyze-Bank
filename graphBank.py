@@ -17,7 +17,7 @@ accountDF, newCatDf = catagorizeTransactions(ckAccount, catagoryPath)
 newCatDf.to_csv("masterCatagories.csv", index=False)
 
 # Use the following lines below to generate a quarterly report
-saveP, graphP, catCkAcct = sliceDfCreateDir2(accountDF, 2024, 1)
+saveP, graphP, catCkAcct = sliceDfCreateDir2(accountDF, 2024, 3)
 
 catCkAcct.to_csv(saveP + "\\transactionsCatagorized.csv", index=False)
 rmvDF.to_csv(saveP + "\\removedTransactions.csv", index=False)
@@ -27,4 +27,4 @@ saveLineGraphs(catCkAcct, "catagory", graphP)
 genPieCharts(catCkAcct, graphP)
 genStackedBar("Transactions Grouped by Name", catCkAcct, "name", graphP + "\\barName.png")
 genStackedBar("Transactions Grouped by Catagory", catCkAcct, "catagory", graphP + "\\barCatagory.png")
-genLineChart("Checking Account Timeline", catCkAcct, graphP + "\\lineChecking.png")
+genLineChart("Checking Account Timeline", catCkAcct.copy(), graphP + "\\lineChecking.png")
