@@ -4,11 +4,11 @@ from datetime import datetime
 import pretty_errors
 
 
-catagoryPath = "bankResources/masterCatagories.csv"
+catagoryPath = "masterCatagories.csv"
 
-autoDF, rmvAutoDF = removeRows("bankResources/wfAutographJanSept.csv", "Autograph", ["ONLINE PAYMENT THANK YOU"])  # Removing payment to card
-platDF, rmvPlatDF = removeRows("bankResources/wfPlatinumJanSept.csv", "Platinum", ["ONLINE PAYMENT THANK YOU"])  # Removing payment to card
-chckDF, rmvChckDF = removeRows("bankResources/wfCheckingJanSept.csv", "Checking", ["ONLINE TRANSFER REF #[A-Z0-9]* TO WELLS FARGO AUTOGRAPH", "ONLINE TRANSFER REF #[A-Z0-9]* TO PLATINUM"])  # Payments to CC came from this account
+autoDF, rmvAutoDF = removeRows("wfAutographJanSept.csv", "Autograph", ["ONLINE PAYMENT THANK YOU"])  # Removing payment to card
+platDF, rmvPlatDF = removeRows("wfPlatinumJanSept.csv", "Platinum", ["ONLINE PAYMENT THANK YOU"])  # Removing payment to card
+chckDF, rmvChckDF = removeRows("wfCheckingJanSept.csv", "Checking", ["ONLINE TRANSFER REF #[A-Z0-9]* TO WELLS FARGO AUTOGRAPH", "ONLINE TRANSFER REF #[A-Z0-9]* TO PLATINUM"])  # Payments to CC came from this account
 
 ckAccount = pd.concat([chckDF, platDF, autoDF])
 rmvDF = pd.concat([rmvChckDF, rmvPlatDF, rmvAutoDF])
