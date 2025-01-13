@@ -7,9 +7,9 @@ import pretty_errors
 catagoryPath = "masterCatagories.csv"
 
 # Import accounts, remove rows relating to payments
-autoDF, rmvAutoDF = removeRows("wfAutographJanSept.csv", "Autograph", ["ONLINE PAYMENT THANK YOU"])  # Removing payment to card
-platDF, rmvPlatDF = removeRows("wfPlatinumJanSept.csv", "Platinum", ["ONLINE PAYMENT THANK YOU"])  # Removing payment to card
-chckDF, rmvChckDF = removeRows("wfCheckingJanSept.csv", "Checking", ["ONLINE TRANSFER REF #[A-Z0-9]* TO WELLS FARGO AUTOGRAPH", "ONLINE TRANSFER REF #[A-Z0-9]* TO PLATINUM"])  # Payments to CC came from this account
+autoDF, rmvAutoDF = removeRows("wfAutographAugDec.csv", "Autograph", ["ONLINE PAYMENT THANK YOU"])  # Removing payment to card
+platDF, rmvPlatDF = removeRows("wfPlatinumAugDec.csv", "Platinum", ["ONLINE PAYMENT THANK YOU"])  # Removing payment to card
+chckDF, rmvChckDF = removeRows("wfCheckingAugDec.csv", "Checking", ["ONLINE TRANSFER REF #[A-Z0-9]* TO WELLS FARGO AUTOGRAPH", "ONLINE TRANSFER REF #[A-Z0-9]* TO PLATINUM"])  # Payments to CC came from this account
 
 # Combine all accounts
 ckAccount = pd.concat([chckDF, platDF, autoDF])
@@ -20,7 +20,7 @@ accountDF, newCatDf = catagorizeTransactions(ckAccount, catagoryPath)
 newCatDf.to_csv("masterCatagories.csv", index=False)
 
 # Create the directory in which everything will be saved, also slice down the transcations by date
-saveP, graphP, catCkAcct = sliceDfCreateDir2(accountDF, 2024, 3)
+saveP, graphP, catCkAcct = sliceDfCreateDir2(accountDF, 2024, 4)
 
 # Create the charts/graphs for the quarterly report
 saveLineGraphs(catCkAcct, "catagory", graphP)

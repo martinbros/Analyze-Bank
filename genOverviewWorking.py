@@ -32,7 +32,7 @@ paths2023 = ["2023_Q1\\transactionsCatagorized.csv",
 
 paths2024 = ["2024_Q1\\transactionsCatagorized.csv",
 			"2024_Q2\\transactionsCatagorized.csv",
-			"2024_Q3_working\\transactionsCatagorized.csv"]
+			"2024_Q3\\transactionsCatagorized.csv"]
 
 allYears = ["2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
 			"2019Q2_2019-04-02_2019-06-27\\transactionsCatagorized.csv",
@@ -56,11 +56,13 @@ allYears = ["2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
 			"2023_Q4\\transactionsCatagorized.csv",
 			"2024_Q1\\transactionsCatagorized.csv",
 			"2024_Q2\\transactionsCatagorized.csv",
-			"2024_Q3_working\\transactionsCatagorized.csv",]
+			"2024_Q3\\transactionsCatagorized.csv",
+			"2024_Q4_working\\transactionsCatagorized.csv",]
 
 accountDF = pd.DataFrame()
 for path in allYears:
-	accountDF = accountDF.append(pd.read_csv(path), sort=False)
+	#accountDF = accountDF.append(pd.read_csv(path), sort=False)
+	accountDF = pd.concat([accountDF, pd.read_csv(path)])
 
 
 #Single figure analysis
@@ -74,6 +76,7 @@ stackGraphs("Checking Account, No Reallocation", accountDF.loc[(accountDF.catago
 stackGraphs("Checking Account, Income", accountDF.loc[(accountDF.catagory == "income")].copy())
 stackGraphs("Checking Account, No Income, No Bills, No Reallocation", accountDF.loc[(accountDF.catagory != "income") & (accountDF.catagory != "bills") & (accountDF.catagory != "reallocation")].copy())
 stackGraphs("Food and Drink", accountDF.loc[(accountDF.catagory == "food") | (accountDF.catagory == "drink")].copy())
+stackGraphs("Transportation", accountDF.loc[accountDF.catagory == "transportation"].copy())
 
 #genLineChartV2("Chekcing Account, No Income, No Bills, No Reallocation", accountDF.loc[(accountDF.catagory != "income") & (accountDF.catagory != "bills") & (accountDF.catagory != "reallocation")].copy(), weekSpendRate=True)
 #genLineChartV2("Food and Drink", accountDF.loc[(accountDF.catagory == "food") | (accountDF.catagory == "drink")].copy(), weekSpendRate=True)

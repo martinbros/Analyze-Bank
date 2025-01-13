@@ -100,9 +100,9 @@ def catagorizeTransactions(accountDF, catagoryPath):
 			print()
 
 			newCatDF = pd.DataFrame({"name": [inName], "cat": [inCat]})
-			catagoryDF = catagoryDF.append(newCatDF)  # Add new name and catagory to the catagory data frame
+			catagoryDF = pd.concat([catagoryDF, newCatDF])  # Add new name and catagory to the catagory data frame
 
-			allNewCatDf = allNewCatDf.append(newCatDF)  # Add new name and catagory to the new catagory data frame
+			allNewCatDf = pd.concat([allNewCatDf, newCatDF])  # Add new name and catagory to the new catagory data frame
 			allNewCatDf.to_csv("tempCatagories.csv", index=False)  # Save a temporary catagories file
 
 			catList.append(inCat)  # append inputed catagory to the catList
@@ -196,12 +196,20 @@ def percentOfIncome(accountDF, fileDirec=None):
 	catSumDF = catSumDF.sort_values(by="abs", ascending=False)  # Sort dataframe by contents of "abs" column
 
 	payment = catSumDF["Transaction"]  # Pull "transaction" column
-	income = payment["income"]  # Pull data tied to index "income" of "transaction" column
+
+	try:
+		income = payment["income"]  # Pull data tied to index "income" of "transaction" column
+	except KeyError:
+		income = 1
+
 	savings = round(catSumDF["Transaction"].sum(), 2)  # Sum "transaction" column and round to 2 decimal places
 
 	savingsDF = pd.DataFrame([savings], columns=["abs"], index=["savings"])  # create DF with stored savings variable
-	percentDF = catSumDF.append(savingsDF)  # append savings DF to catSumDF and create percentDF
-	percentDF = percentDF.drop(["income"])  # drop "income" row from the percentDF
+	percentDF = pd.concat([catSumDF, savingsDF])  # append savings DF to catSumDF and create percentDF
+	try:
+		percentDF.drop(["income"], inplace=True)  # drop "income" row from the percentDF
+	except KeyError:
+		pass
 	percentDF["Percent"] = percentDF["abs"].apply(lambda x: (x / income), 1)  # create "percent" column from the "abs" column
 	percentDF = percentDF.sort_values(by="Percent", ascending=False)  # Sort percentDF by the "percent" column
 
@@ -220,7 +228,7 @@ def percentOfIncome(accountDF, fileDirec=None):
 	nameDF = accountDF.groupby("name").Transaction.sum().reset_index()
 	nameDF["abs"] = nameDF.Transaction.abs()
 	savingsDF = pd.DataFrame([["Savings", savings]], columns=["name", "abs"])  # create DF with stored savings variable
-	nameDF = nameDF.append(savingsDF)
+	nameDF = pd.concat([nameDF, savingsDF])
 	nameDF["Percent"] = nameDF["abs"].apply(lambda x: (x / income), 1)  # create "percent" column from the "abs" column
 	nameDF = nameDF.sort_values(by="abs", ascending=False)
 	print(nameDF.reset_index(drop=True).to_string(), file=logFile)
@@ -261,7 +269,7 @@ def saveLineGraphs(accountDF, groupCol, directory):
 #
 #################################
 def genLineChart(name, accountDF, fileName=None, subDF=None, weekSpendRate=False):
-	accountDF.loc[:, "Date"] = pd.to_datetime(accountDF.loc[:, "Date"])  # Convert the "Date" column to datetime
+	accountDF.loc[:, "Date"] = pd.to_datetime(accountDF.loc[:, "Date"], format="mixed")  # Convert the "Date" column to datetime
 
 	accountSeries = pd.Series(list(accountDF["Transaction"]), index=list(pd.to_datetime(accountDF["Date"])))
 	dailySumSeries = accountSeries.resample('1D').sum()
@@ -339,7 +347,7 @@ def genStackedBar(figName, accountDF, groupCol, fileName=None):
 	print("Generating \"%s\" stacked bar graph..." % (figName))
 	groupDF = accountDF.groupby(groupCol).Transaction.apply(list).reset_index()  # Group accountDF by contents of column variable "groupCol", the contents of column "Transaction" stored in list
 	columnsDF = pd.DataFrame(groupDF.Transaction.tolist(), index=groupDF[groupCol]).abs()  # Create dataframe with list data is separated into columns, index set "groupCol" found groups, absolute value data
-	a = columnsDF.assign(tmp=columnsDF.sum(axis=1)).sort_values('tmp', ascending=False).drop('tmp', 1)  # Sort rows of DF by the row's sum
+	a = columnsDF.assign(tmp=columnsDF.sum(axis=1)).sort_values('tmp', ascending=False).drop('tmp', axis=1)  # Sort rows of DF by the row's sum
 
 	plt.style.use('bmh')
 	ax = a.plot(kind='bar', stacked=True, figsize=(18, 9), legend=False)  # Generate a stacked bar graph
