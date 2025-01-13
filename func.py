@@ -15,6 +15,29 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 #
 # Import data, and remove rows that match regex
 #
+# infoDict: Dictionary with the following keys
+# "path": string ~ path of where csv file is located
+# "ID": string ~ tag applied to data for reference to which account the expense was applied
+# "regexStrings": list ~ list of regex expressions for transactions to be removed
+#
+#################################
+def removeRows2(infoDict):
+
+	accountDF = pd.read_csv(infoDict["path"], usecols=[0, 1, 4], names=["Date", "Transaction", "Info"])  # Import checking account CSV for processing
+	accountDF["remove"] = False
+	accountDF["cardID"] = infoDict["ID"]
+
+	for regexString in infoDict["regexStrings"]:
+		filterRows = accountDF["Info"].str.contains(regexString)  # Find the entries that match the regex
+		accountDF["remove"] = accountDF["remove"] | filterRows
+
+	return accountDF[~accountDF["remove"]].drop(["remove"], axis=1), accountDF[accountDF["remove"]].drop(["remove"], axis=1)  # kept transactions, transactions that were removed
+
+
+#################################
+#
+# Import data, and remove rows that match regex
+#
 # accountPath: string ~ path of where csv file is located
 # cardID: string ~ tag applied to data for reference to which account the expense was applied
 # regexStrings: list ~ list of regex expressions for transactions to be removed

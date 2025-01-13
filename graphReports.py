@@ -32,7 +32,8 @@ paths2023 = ["2023_Q1\\transactionsCatagorized.csv",
 
 paths2024 = ["2024_Q1\\transactionsCatagorized.csv",
 			"2024_Q2\\transactionsCatagorized.csv",
-			"2024_Q3\\transactionsCatagorized.csv"]
+			"2024_Q3\\transactionsCatagorized.csv",
+			"2024_Q4\\transactionsCatagorized.csv"]
 
 allYears = ["2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
 			"2019Q2_2019-04-02_2019-06-27\\transactionsCatagorized.csv",
@@ -57,10 +58,10 @@ allYears = ["2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
 			"2024_Q1\\transactionsCatagorized.csv",
 			"2024_Q2\\transactionsCatagorized.csv",
 			"2024_Q3\\transactionsCatagorized.csv",
-			"2024_Q4_working\\transactionsCatagorized.csv",]
+			"2024_Q4\\transactionsCatagorized.csv",]
 
 accountDF = pd.DataFrame()
-for path in allYears:
+for path in paths2024:
 	#accountDF = accountDF.append(pd.read_csv(path), sort=False)
 	accountDF = pd.concat([accountDF, pd.read_csv(path)])
 
