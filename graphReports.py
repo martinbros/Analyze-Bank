@@ -61,7 +61,7 @@ allYears = ["2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
 			"2024_Q4\\transactionsCatagorized.csv",]
 
 accountDF = pd.DataFrame()
-for path in paths2024:
+for path in allYears:
 	#accountDF = accountDF.append(pd.read_csv(path), sort=False)
 	accountDF = pd.concat([accountDF, pd.read_csv(path)])
 

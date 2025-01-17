@@ -51,7 +51,7 @@ if (args.path is not None) and (re.search(r".*(20)\d{2}(_Q)[1-4].*(transactionsC
 	catCkAcct = pd.read_csv(args.path)
 	catCkAcct["Date"] = pd.to_datetime(catCkAcct["Date"])  # Convert the "Date" column to datetime
 
-if args.year and args.quarter:
+elif args.year and args.quarter:
 
 	# Import accounts, remove rows relating to payments
 	autoDF, rmvAutoDF = removeRows2(autographDict)

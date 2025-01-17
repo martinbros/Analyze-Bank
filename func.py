@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 from datetime import datetime
@@ -517,6 +518,9 @@ def stackGraphs(name, lgDF, separation="year"):
 				else:
 					legline.set_alpha(0.2)
 				fig.canvas.draw()
+
+	axes[-1].xaxis.set_major_locator(mdates.MonthLocator())
+	axes[-1].xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 
 	fig.canvas.mpl_connect("pick_event", onpick)
 	fig.tight_layout(pad=4)
