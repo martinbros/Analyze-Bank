@@ -34,7 +34,7 @@ The arguments -p and -y are used together to generate a quarterly report. These 
 
 **Order of Operations: Re-generate Quarterly Report**
 
-If the user decides to manually edit "transactionsCatagorized.csv" and wishes to re-run the generation of the report, this can be done by passing the path to "transactionsCatagorized.csv" to the -p argument of "genReport.py" and a new report will be generated.
+If the user decides to manually edit "transactionsCatagorized.csv" and wishes to re-run the generation of the report, this can be done by passing the path of "transactionsCatagorized.csv" to the -p argument of "genReport.py" and a new report will be generated.
 
 ## Operation: GraphReports.py
 
