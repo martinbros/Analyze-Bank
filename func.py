@@ -79,7 +79,7 @@ def sliceDfCreateDir2(accountDF, year, quarter):
 	try:
 		os.makedirs(grphPath)
 	except OSError:
-		print("Failed to create the directory %s" % grphPath)
+		print("##################Failed to create the directory %s" % grphPath)
 	else:
 		print("Successfully created the directory %s" % grphPath)
 

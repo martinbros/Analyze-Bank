@@ -26,10 +26,10 @@ The arguments -p and -y are used together to generate a quarterly report. These 
 		- For example: I use this to remove payments from my checking account to a credit card as having both the payment and the individual transactions paints an inaccurate balance
 - Function "removeRows2" in "func.py" properly ingests the transaction CSV files
 2. Run "genReport.py" with the appropriate -y and -q parameters
-3. The script will then prompt the user to create a filter string for the displayed transaction, this is used to identify a this transaction and other similar transactions
+3. The script will then prompt the user to create a filter string for the displayed transaction, this is used to identify this transaction and other similar transactions
 4. The script will then prompt the user to create a category for the displayed transaction
 5. The script will repeat steps 3 and 4 until all transactions are categorized
-6. The script will then generate line graphs, pie charts, expense logs, and stack bar graphs based on the transaction data within a folder following the naming structure "year Q# working"
+6. The script will then generate line graphs, pie charts, expense logs, and stacked bar graphs based on the transaction data within a folder following the naming structure "year Q# working"
 7. Report generation is now complete
 
 **Order of Operations: Re-generate Quarterly Report**

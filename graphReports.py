@@ -1,6 +1,7 @@
 import pandas as pd
 from func import *
 from datetime import datetime
+import re
 
 pathsTest = ["2021Q2_2021-04-06_2021-06-30\\transactionsCatagorized.csv",
 			"2021Q3_2021-07-02_2021-10-06\\transactionsCatagorized.csv"]
@@ -34,6 +35,10 @@ paths2024 = ["2024_Q1\\transactionsCatagorized.csv",
 			"2024_Q2\\transactionsCatagorized.csv",
 			"2024_Q3\\transactionsCatagorized.csv",
 			"2024_Q4\\transactionsCatagorized.csv"]
+			
+paths2025 = ["2025_Q1\\transactionsCatagorized.csv",
+			"2025_Q2\\transactionsCatagorized.csv",
+			"2025_Q3_working\\transactionsCatagorized.csv"]		
 
 allYears = ["2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
 			"2019Q2_2019-04-02_2019-06-27\\transactionsCatagorized.csv",
@@ -58,13 +63,15 @@ allYears = ["2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
 			"2024_Q1\\transactionsCatagorized.csv",
 			"2024_Q2\\transactionsCatagorized.csv",
 			"2024_Q3\\transactionsCatagorized.csv",
-			"2024_Q4\\transactionsCatagorized.csv",]
+			"2024_Q4\\transactionsCatagorized.csv",
+			"2025_Q1\\transactionsCatagorized.csv",
+			"2025_Q2\\transactionsCatagorized.csv",
+			"2025_Q3_working\\transactionsCatagorized.csv"]
 
 accountDF = pd.DataFrame()
-for path in allYears:
+for path in paths2025:
 	#accountDF = accountDF.append(pd.read_csv(path), sort=False)
 	accountDF = pd.concat([accountDF, pd.read_csv(path)])
-
 
 #Single figure analysis
 #genLineChartV2("Account Balance", accountDF.copy(), weekSpendRate=True)
@@ -94,8 +101,8 @@ dataDF = accountDF.groupby(["catagory", "name"]).Transaction.sum().reset_index()
 dataDF = dataDF[dataDF["catagory"] != "bills"]  # Remove rows with "bills" in catagory column
 dataDF = dataDF[dataDF["catagory"] != "reallocation"]  # Remove rows with "bills" in catagory column
 topNameList = list(dataDF["name"])[:10]  #List of top items
-print(dataDF)
+print(dataDF.head(10))
 
 for i, name in enumerate(topNameList, start=1):
-	dataSample = accountDF[accountDF["name"].str.match(name)]
+	dataSample = accountDF[accountDF["name"].str.match(re.escape(name))]
 	genLineChart("#%s: %s" % (i, name), dataSample.copy(), weekSpendRate=True)  # Just transaction info
