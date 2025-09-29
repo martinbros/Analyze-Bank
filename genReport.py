@@ -20,7 +20,7 @@ def delete_files_in_directory(directory_path, extensions=[".txt", ".png"]):
 		print("Error occurred while deleting files.")
 
 
-catagoryPath = "masterCatagories.csv"
+catagoryPath = "..\\analyzeBankReports\\masterCatagories.csv"
 
 autographDict = {"path" : "wfAutograph.csv",
 				"ID" : "Autograph",
@@ -64,7 +64,7 @@ elif args.year and args.quarter:
 
 	# Catagorize transactions
 	accountDF, newCatDf = catagorizeTransactions(ckAccount, catagoryPath)
-	newCatDf.to_csv("masterCatagories.csv", index=False)
+	newCatDf.to_csv(catagoryPath, index=False)
 
 	# Create the directory in which everything will be saved, also slice down the transcations by date
 	saveP, graphP, catCkAcct = sliceDfCreateDir2(accountDF, args.year, args.quarter)

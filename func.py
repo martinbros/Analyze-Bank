@@ -73,7 +73,7 @@ def sliceDfCreateDir2(accountDF, year, quarter):
 	accountDF.sort_values(by=["Date"], inplace=True)  # Order the dataframe
 	accountDF = accountDF[(accountDF['Date'].dt.year == year) & (accountDF["Date"].dt.quarter == quarter)]
 
-	savePath = "%s_Q%s_working" % (year, quarter)
+	savePath = "..\\analyzeBankReports\\%s_Q%s_working" % (year, quarter)
 	grphPath = savePath + "\\graphs"
 
 	try:
