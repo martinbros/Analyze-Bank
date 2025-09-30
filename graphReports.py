@@ -3,73 +3,73 @@ from func import *
 from datetime import datetime
 import re
 
-pathsTest = ["2021Q2_2021-04-06_2021-06-30\\transactionsCatagorized.csv",
-			"2021Q3_2021-07-02_2021-10-06\\transactionsCatagorized.csv"]
+pathsTest = ["..\\analyzeBankReports\\2021Q2_2021-04-06_2021-06-30\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2021Q3_2021-07-02_2021-10-06\\transactionsCatagorized.csv"]
 
-paths2021 = ["2021Q1_2021-01-04_2021-04-06\\transactionsCatagorized.csv",
-			"2021Q2_2021-04-06_2021-06-30\\transactionsCatagorized.csv",
-			"2021Q3_2021-07-02_2021-10-06\\transactionsCatagorized.csv",
-			"2021Q4_2021-10-06_2022-01-05\\transactionsCatagorized.csv"]
+paths2021 = ["..\\analyzeBankReports\\2021Q1_2021-01-04_2021-04-06\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2021Q2_2021-04-06_2021-06-30\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2021Q3_2021-07-02_2021-10-06\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2021Q4_2021-10-06_2022-01-05\\transactionsCatagorized.csv"]
 
-paths2020 = ["2020Q1_2020-01-03_2020-03-25\\transactionsCatagorized.csv",
-			"2020Q2_2020-03-27_2020-06-18\\transactionsCatagorized.csv",
-			"2020Q3_2020-06-19_2020-09-22\\transactionsCatagorized.csv",
-			"2020Q4_2020-09-25_2021-01-04\\transactionsCatagorized.csv"]
+paths2020 = ["..\\analyzeBankReports\\2020Q1_2020-01-03_2020-03-25\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2020Q2_2020-03-27_2020-06-18\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2020Q3_2020-06-19_2020-09-22\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2020Q4_2020-09-25_2021-01-04\\transactionsCatagorized.csv"]
 
-paths2019 = ["2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
-			"2019Q2_2019-04-02_2019-06-27\\transactionsCatagorized.csv",
-			"2019Q3_2019-06-28_2019-09-26\\transactionsCatagorized.csv",
-			"2019Q4_2019-09-27_2020-01-02\\transactionsCatagorized.csv"]
+paths2019 = ["..\\analyzeBankReports\\2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2019Q2_2019-04-02_2019-06-27\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2019Q3_2019-06-28_2019-09-26\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2019Q4_2019-09-27_2020-01-02\\transactionsCatagorized.csv"]
 
-paths2022 = ["2022Q1_2022-01-05_2022-04-06\\transactionsCatagorized.csv",
-			"2022Q2_2022-04-06_2022-06-30\\transactionsCatagorized.csv",
-			"2022Q3_2022-07-01_2022-10-05\\transactionsCatagorized.csv",
-			"2022Q4_2022-10-05_2022-12-30\\transactionsCatagorized.csv"]
+paths2022 = ["..\\analyzeBankReports\\2022Q1_2022-01-05_2022-04-06\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2022Q2_2022-04-06_2022-06-30\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2022Q3_2022-07-01_2022-10-05\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2022Q4_2022-10-05_2022-12-30\\transactionsCatagorized.csv"]
 
-paths2023 = ["2023_Q1\\transactionsCatagorized.csv",
-			"2023_Q2\\transactionsCatagorized.csv",
-			"2023_Q3\\transactionsCatagorized.csv",
-			"2023_Q4\\transactionsCatagorized.csv"]
+paths2023 = ["..\\analyzeBankReports\\2023_Q1\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2023_Q2\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2023_Q3\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2023_Q4\\transactionsCatagorized.csv"]
 
-paths2024 = ["2024_Q1\\transactionsCatagorized.csv",
-			"2024_Q2\\transactionsCatagorized.csv",
-			"2024_Q3\\transactionsCatagorized.csv",
-			"2024_Q4\\transactionsCatagorized.csv"]
+paths2024 = ["..\\analyzeBankReports\\2024_Q1\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2024_Q2\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2024_Q3\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2024_Q4\\transactionsCatagorized.csv"]
 			
-paths2025 = ["2025_Q1\\transactionsCatagorized.csv",
-			"2025_Q2\\transactionsCatagorized.csv",
-			"2025_Q3_working\\transactionsCatagorized.csv"]		
+paths2025 = ["..\\analyzeBankReports\\2025_Q1\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2025_Q2\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2025_Q3_working\\transactionsCatagorized.csv"]		
 
-allYears = ["2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
-			"2019Q2_2019-04-02_2019-06-27\\transactionsCatagorized.csv",
-			"2019Q3_2019-06-28_2019-09-26\\transactionsCatagorized.csv",
-			"2019Q4_2019-09-27_2020-01-02\\transactionsCatagorized.csv",
-			"2020Q1_2020-01-03_2020-03-25\\transactionsCatagorized.csv",
-			"2020Q2_2020-03-27_2020-06-18\\transactionsCatagorized.csv",
-			"2020Q3_2020-06-19_2020-09-22\\transactionsCatagorized.csv",
-			"2020Q4_2020-09-25_2021-01-04\\transactionsCatagorized.csv",
-			"2021Q1_2021-01-04_2021-04-06\\transactionsCatagorized.csv",
-			"2021Q2_2021-04-06_2021-06-30\\transactionsCatagorized.csv",
-			"2021Q3_2021-07-02_2021-10-06\\transactionsCatagorized.csv",
-			"2021Q4_2021-10-06_2022-01-05\\transactionsCatagorized.csv",
-			"2022Q1_2022-01-05_2022-04-06\\transactionsCatagorized.csv",
-			"2022Q2_2022-04-06_2022-06-30\\transactionsCatagorized.csv",
-			"2022Q3_2022-07-01_2022-10-05\\transactionsCatagorized.csv",
-			"2022Q4_2022-10-05_2022-12-30\\transactionsCatagorized.csv",
-			"2023_Q1\\transactionsCatagorized.csv",
-			"2023_Q2\\transactionsCatagorized.csv",
-			"2023_Q3\\transactionsCatagorized.csv",
-			"2023_Q4\\transactionsCatagorized.csv",
-			"2024_Q1\\transactionsCatagorized.csv",
-			"2024_Q2\\transactionsCatagorized.csv",
-			"2024_Q3\\transactionsCatagorized.csv",
-			"2024_Q4\\transactionsCatagorized.csv",
-			"2025_Q1\\transactionsCatagorized.csv",
-			"2025_Q2\\transactionsCatagorized.csv",
-			"2025_Q3_working\\transactionsCatagorized.csv"]
+allYears = ["..\\analyzeBankReports\\2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2019Q2_2019-04-02_2019-06-27\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2019Q3_2019-06-28_2019-09-26\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2019Q4_2019-09-27_2020-01-02\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2020Q1_2020-01-03_2020-03-25\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2020Q2_2020-03-27_2020-06-18\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2020Q3_2020-06-19_2020-09-22\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2020Q4_2020-09-25_2021-01-04\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2021Q1_2021-01-04_2021-04-06\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2021Q2_2021-04-06_2021-06-30\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2021Q3_2021-07-02_2021-10-06\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2021Q4_2021-10-06_2022-01-05\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2022Q1_2022-01-05_2022-04-06\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2022Q2_2022-04-06_2022-06-30\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2022Q3_2022-07-01_2022-10-05\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2022Q4_2022-10-05_2022-12-30\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2023_Q1\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2023_Q2\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2023_Q3\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2023_Q4\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2024_Q1\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2024_Q2\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2024_Q3\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2024_Q4\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2025_Q1\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2025_Q2\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2025_Q3_working\\transactionsCatagorized.csv"]
 
 accountDF = pd.DataFrame()
-for path in paths2025:
+for path in allYears:
 	#accountDF = accountDF.append(pd.read_csv(path), sort=False)
 	accountDF = pd.concat([accountDF, pd.read_csv(path)])
 

@@ -5,6 +5,7 @@ Quick Look: Program designed to generate line graphs, pie charts, categorize exp
 ## Operation: genReport.py
 
 The script is executed using 1 or 2 arguments as outlined below:
+
 ```
 -p string : Pass the path of an already categorized transaction CSV file for reprocessing and generation of graphs and logs
 
@@ -20,10 +21,10 @@ The arguments -p and -y are used together to generate a quarterly report. These 
 1. Before executing the script, make sure that the following constants are correct:
 - "categoryPath" : The path to a CSV file containing filter strings in a column "name", category strings in column "cat", and user input IDs in column "ID"
 - At least one dictionary with the following keys and info:
-	- "path" : Path to a CSV file with list of transactions from a bank account
-	- "ID" : A generic string to identify which account a transaction originates from
-	- "regexStrings" : A list of regex strings that match to certain transactions that one would wish to remove from a transaction list
-		- For example: I use this to remove payments from my checking account to a credit card as having both the payment and the individual transactions paints an inaccurate balance
+  - "path" : Path to a CSV file with list of transactions from a bank account
+  - "ID" : A generic string to identify which account a transaction originates from
+  - "regexStrings" : A list of regex strings that match to certain transactions that one would wish to remove from a transaction list
+    - For example: I use this to remove payments from my checking account to a credit card as having both the payment and the individual transactions paints an inaccurate balance
 - Function "removeRows2" in "func.py" properly ingests the transaction CSV files
 2. Run "genReport.py" with the appropriate -y and -q parameters
 3. The script will then prompt the user to create a filter string for the displayed transaction, this is used to identify this transaction and other similar transactions
@@ -44,3 +45,9 @@ This is a general playground for slicing and dicing the data in a quarterly repo
 
 - Traces of "stackGraphs" can be turned on/off by clicking on the trace's color in the legend
 - Adding an entry to the "ID" column of "masterCatagories.csv" will use this value instead of the filtering string value which can make something more human readable.
+
+---------------------
+
+*TODO*
+
+- Code a system to clean up "masterCatagories.csv" as entries are no longer being used
