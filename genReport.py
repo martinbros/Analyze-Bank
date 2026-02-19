@@ -50,6 +50,7 @@ if (args.path is not None) and (re.search(r".*(20)\d{2}(_Q)[1-4].*(transactionsC
 
 	catCkAcct = pd.read_csv(args.path)
 	catCkAcct["Date"] = pd.to_datetime(catCkAcct["Date"])  # Convert the "Date" column to datetime
+	catCkAcct.sort_values(by=["Date"], inplace=True)  # Order the dataframe
 
 elif args.year and args.quarter:
 

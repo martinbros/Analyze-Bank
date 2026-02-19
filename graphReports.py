@@ -38,7 +38,8 @@ paths2024 = ["..\\analyzeBankReports\\2024_Q1\\transactionsCatagorized.csv",
 			
 paths2025 = ["..\\analyzeBankReports\\2025_Q1\\transactionsCatagorized.csv",
 			"..\\analyzeBankReports\\2025_Q2\\transactionsCatagorized.csv",
-			"..\\analyzeBankReports\\2025_Q3_working\\transactionsCatagorized.csv"]		
+			"..\\analyzeBankReports\\2025_Q3\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2025_Q4\\transactionsCatagorized.csv"]		
 
 allYears = ["..\\analyzeBankReports\\2019Q1_2019-01-08_2019-04-02\\transactionsCatagorized.csv",
 			"..\\analyzeBankReports\\2019Q2_2019-04-02_2019-06-27\\transactionsCatagorized.csv",
@@ -66,7 +67,8 @@ allYears = ["..\\analyzeBankReports\\2019Q1_2019-01-08_2019-04-02\\transactionsC
 			"..\\analyzeBankReports\\2024_Q4\\transactionsCatagorized.csv",
 			"..\\analyzeBankReports\\2025_Q1\\transactionsCatagorized.csv",
 			"..\\analyzeBankReports\\2025_Q2\\transactionsCatagorized.csv",
-			"..\\analyzeBankReports\\2025_Q3_working\\transactionsCatagorized.csv"]
+			"..\\analyzeBankReports\\2025_Q3\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2025_Q4\\transactionsCatagorized.csv"]
 
 accountDF = pd.DataFrame()
 for path in allYears:
