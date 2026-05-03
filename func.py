@@ -9,6 +9,7 @@ import os
 import sys
 import pretty_errors
 import warnings
+import re
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
@@ -24,7 +25,12 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 #################################
 def removeRows2(infoDict):
 
-	accountDF = pd.read_csv(infoDict["path"], usecols=[0, 1, 4], names=["Date", "Transaction", "Info"])  # Import checking account CSV for processing
+	if infoDict["ID"] != "Checking":
+		accountDF = pd.read_csv(infoDict["path"], usecols=[0, 1, 2], skiprows=1, names=["Date", "Info", "Transaction"])  # Import checking account CSV for processing
+	else:
+		accountDF = pd.read_csv(infoDict["path"], usecols=[0, 1, 2], skiprows=1, names=["Date", "longInfo", "Transaction"])  # Import checking account CSV for processing
+		accountDF["Info"] = accountDF.apply(lambda row: shortenInfo(row["longInfo"]), axis=1)
+
 	accountDF["remove"] = False
 	accountDF["cardID"] = infoDict["ID"]
 
@@ -35,6 +41,12 @@ def removeRows2(infoDict):
 	return accountDF[~accountDF["remove"]].drop(["remove"], axis=1), accountDF[accountDF["remove"]].drop(["remove"], axis=1)  # kept transactions, transactions that were removed
 
 
+def shortenInfo(longInfo):
+	if "AUTHORIZED ON" in longInfo:
+		match = re.search(r"(?<=\d{2}\/\d{2} ).*?(?=\s{2,})", longInfo) # (find date)capture info(stop after multiple spaces)
+		return match.group(0)
+	else:
+		return longInfo
 #################################
 #
 # Import data, and remove rows that match regex
