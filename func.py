@@ -79,14 +79,22 @@ def removeRows(accountPath, cardID, regexStrings):
 # quarter: int ~ Quarter which the dataframe will be sliced
 #
 #################################
-def sliceDfCreateDir2(accountDF, year, quarter):
+def sliceDfCreateDir2(accountDF, year, quarter, month):
 
 	accountDF["Date"] = pd.to_datetime(accountDF["Date"])  # Convert the "Date" column to datetime
 	accountDF.sort_values(by=["Date"], inplace=True)  # Order the dataframe
-	accountDF = accountDF[(accountDF['Date'].dt.year == year) & (accountDF["Date"].dt.quarter == quarter)]
+	
+	if quarter != None:
+		accountDF = accountDF[(accountDF['Date'].dt.year == year) & (accountDF["Date"].dt.quarter == quarter)]
 
-	savePath = "..\\analyzeBankReports\\%s_Q%s_working" % (year, quarter)
-	grphPath = savePath + "\\graphs"
+		savePath = "..\\analyzeBankReports\\%s_Q%s_working" % (year, quarter)
+		grphPath = savePath + "\\graphs"
+
+	elif month != None:
+		accountDF = accountDF[(accountDF['Date'].dt.year == year) & (accountDF["Date"].dt.month == month)]
+
+		savePath = "..\\analyzeBankReports\\%s_M%s_working" % (year, month)
+		grphPath = savePath + "\\graphs"
 
 	try:
 		os.makedirs(grphPath)

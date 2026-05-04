@@ -38,6 +38,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-y", "--year", type=int, help="Pick a Year")
 parser.add_argument("-q", "--quarter", type=int, choices=[1, 2, 3, 4], help="Pick a Quarter")
 parser.add_argument("-p", "--path", type=str, help="CSV path to update graphs and log")
+parser.add_argument("-m", "--month", type=int, choices=[1,2,3,4,5,6,7,8,9,10,11,12], help="Month Number")
 
 args = parser.parse_args()
 
@@ -52,7 +53,7 @@ if (args.path is not None) and (re.search(r".*(20)\d{2}(_Q)[1-4].*(transactionsC
 	catCkAcct["Date"] = pd.to_datetime(catCkAcct["Date"])  # Convert the "Date" column to datetime
 	catCkAcct.sort_values(by=["Date"], inplace=True)  # Order the dataframe
 
-elif args.year and args.quarter:
+elif (args.year and args.quarter) or (args.year and args.month):
 
 	# Import accounts, remove rows relating to payments
 	autoDF, rmvAutoDF = removeRows2(autographDict)
@@ -68,7 +69,7 @@ elif args.year and args.quarter:
 	newCatDf.to_csv(catagoryPath, index=False)
 
 	# Create the directory in which everything will be saved, also slice down the transcations by date
-	saveP, graphP, catCkAcct = sliceDfCreateDir2(accountDF, args.year, args.quarter)
+	saveP, graphP, catCkAcct = sliceDfCreateDir2(accountDF, args.year, args.quarter, args.month)
 
 	# Save the generated tables
 	catCkAcct.to_csv(saveP + "\\transactionsCatagorized.csv", index=False)

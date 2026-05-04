@@ -68,7 +68,8 @@ allYears = ["..\\analyzeBankReports\\2019Q1_2019-01-08_2019-04-02\\transactionsC
 			"..\\analyzeBankReports\\2025_Q1\\transactionsCatagorized.csv",
 			"..\\analyzeBankReports\\2025_Q2\\transactionsCatagorized.csv",
 			"..\\analyzeBankReports\\2025_Q3\\transactionsCatagorized.csv",
-			"..\\analyzeBankReports\\2025_Q4\\transactionsCatagorized.csv"]
+			"..\\analyzeBankReports\\2025_Q4\\transactionsCatagorized.csv",
+			"..\\analyzeBankReports\\2026_Q1_working\\transactionsCatagorized.csv"]
 
 accountDF = pd.DataFrame()
 for path in allYears:
