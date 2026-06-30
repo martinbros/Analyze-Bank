@@ -42,7 +42,7 @@ parser.add_argument("-m", "--month", type=int, choices=[1,2,3,4,5,6,7,8,9,10,11,
 
 args = parser.parse_args()
 
-if (args.path is not None) and (re.search(r".*(20)\d{2}(_Q)[1-4].*(transactionsCatagorized.csv)", args.path)):  # Check if it is a good string
+if (args.path is not None) and (re.search(r".*(20)\d{2}(_[Q|M])([1-9]|1[0-2]).*(transactionsCatagorized.csv)", args.path)):  # Check if it is a good string
 	directory = args.path.rsplit("\\", 1)[0]
 	graphP = directory + "\\graphs"
 
